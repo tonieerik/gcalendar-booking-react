@@ -1,80 +1,17 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
 import axios from 'axios';
 import Datepicker, { registerLocale } from 'react-datepicker';
 import moment from 'moment';
-import Loader from 'react-loader-spinner'
-import fi from 'date-fns/locale/fi'
+import Loader from 'react-loader-spinner';
+import fi from 'date-fns/locale/fi';
+import BookingForm from './BookingForm';
+import { ACTIVITY_CLIMBING, ACTIVITY_PENDULUM, ACTIVITY_RAPPELLING, DATE_FORMAT, DATE_FORMAT_DATEPICKER } from './const';
 
 import './App.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 registerLocale("fi", fi);
-
-const ACTIVITY_RAPPELLING = 1
-const ACTIVITY_PENDULUM = 2
-const ACTIVITY_CLIMBING = 3
-
-const ACTIVITIES = [
-  {id: ACTIVITY_RAPPELLING, title: 'Köysilaskeutuminen'},
-  {id: ACTIVITY_PENDULUM, title: 'Siltakeinu'},
-  {id: ACTIVITY_CLIMBING, title: 'Kalliokiipeily'}
-]
-
-const BookingForm = ({activity, date, maxAttendees, time, setIsLoading}) => {
-  const options = [];
-  for (let i = 1; i <= maxAttendees; i++) {
-    options.push({ value: i, label: i });
-  }
-
-  const [attendees, setAttendees] = useState(options[0]);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [note, setNote] = useState('');
-  const [result, setResult] = useState(null);
-
-  const onSend = async () => {
-    setIsLoading(true);
-    
-    const data = {
-      activity: ACTIVITIES.find(act => act.id === activity).title,
-      date: moment(date).format('YYYY-MM-DD'),
-      time,
-      attendees,
-      name,
-      phone,
-      email,
-      note
-    }
-    const res = await axios.post("https://gcalendar-booking.herokuapp.com/create-booking", {data});
-    setResult(res.status);
-
-    setIsLoading(false);
-  }
-
-  return (
-    <center>
-      <h3>Lähetä ajanvarauspyyntö</h3>
-      <div>Huom! Ajanvarauspyynnöt tarkistetaan aina käsin. Ellet saa vahvistusviestiä vuorokauden kuluessa, laita viestiä 0400 627 010.</div>
-      <br />
-      <div>Jos osallistujamäärä ei ole tarkka, merkkaa osallistujien maksimimäärä ja anna paras arviosi 'Huomioitavaa' -kenttään.</div>
-      <br />
-      <table><tbody>
-        <tr><td><b>Ajankohta</b></td><td>{moment(date).format("D.M.YYYY")} klo {time}</td></tr>
-        <tr><td><b>Elämys</b></td><td>{ACTIVITIES.find(act => act.id === activity).title}</td></tr>
-        <tr><td><b>Osallistujamäärä</b></td><td><Select defaultValue={options[0]} options={options} onChange={value => setAttendees(value)} value={attendees} /> (ei sis. sivustakatsojia)</td></tr>
-        <tr><td><b>Varaajan nimi</b></td><td><input onChange={e => setName(e.target.value)} type="text" value={name} /></td></tr>
-        <tr><td><b>Puhelinnumero</b></td><td><input onChange={e => setPhone(e.target.value)} type="tel" value={phone} /></td></tr>
-        <tr><td><b>Sähköposti</b></td><td><input onChange={e => setEmail(e.target.value)} type="email" value={email} /></td></tr>
-        <tr><td><b>Huomioitavaa</b></td><td><textarea onChange={e => setNote(e.target.value)} value={note}></textarea></td></tr>
-      </tbody></table>
-      <div><input type="button" onClick={() => onSend()} value="Lähetä varauspyyntö" /></div>
-      { result && ( result === 200 ? <div>Kiitos varauspyynnöstä, muistathan kysyä ellet saa vahvistusta varaukseesi 24h sisään.</div> : <div>Nyt meni jotain pieleen. Kokeiletko uudestaan ja ellei onnistu, laita viestiä toni@huvimestari.fi / 0400 627 010</div> ) }
-    </center>
-  )
-}
 
 const objToStrMap = obj => {
   let strMap = new Map();
@@ -123,7 +60,7 @@ const App = () => {
 
   const getFreeSlots = async (date) => {
     setIsLoading(true);
-    const res = await axios.get("https://gcalendar-booking.herokuapp.com/free-slots/" + moment(date).format("YYYY-MM-DD"));
+    const res = await axios.get("https://gcalendar-booking.herokuapp.com/free-slots/" + moment(date).format(DATE_FORMAT));
     setFreeSlots(objToStrMap(JSON.parse(res.data)));
     setIsLoading(false);
   }
@@ -155,7 +92,7 @@ const App = () => {
   return (
     <div className="App">
       <Datepicker
-        dateFormat="d.M.yyyy"
+        dateFormat={DATE_FORMAT_DATEPICKER}
         onChange={onDateSelect}
         locale="fi"
         placeholderText="Valitse päivä"
