@@ -28,6 +28,7 @@ const App = () => {
   const [activity, setActivity] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [maxAttendees, setMaxAttendees] = useState(null);
+  const [error, setError] = useState(null);
 
   const renderSlotTable = () =>
     freeSlots && freeSlots.size > 0 && ! isLoading ? 
@@ -36,7 +37,7 @@ const App = () => {
           { renderSlots() }
         </tbody>
       </table>
-    : date && ! isLoading && <div>Ei vapaita aikoja valittuna päivänä</div>
+    : date && ! isLoading && (error ? <div><br />Virhe haettaessa kalenteritapahtumia</div> : <div>Ei vapaita aikoja valittuna päivänä</div>)
 
   const renderSlots = () => {
     const res = [];
@@ -59,10 +60,17 @@ const App = () => {
     </span>
 
   const getFreeSlots = async (date) => {
+    setError(null);
     setIsLoading(true);
-    const res = await axios.get("https://gcalendar-booking.herokuapp.com/free-slots/" + moment(date).format(DATE_FORMAT));
-    setFreeSlots(objToStrMap(JSON.parse(res.data)));
-    setIsLoading(false);
+
+    try {
+      const res = await axios.get("https://gcalendar-booking.herokuapp.com/free-slots/" + moment(date).format(DATE_FORMAT));
+      setFreeSlots(objToStrMap(JSON.parse(res.data)));
+      setIsLoading(false);
+    } catch(e) {
+      setError('Virhe haettaessa kalenteritapahtumia.');
+      setIsLoading(false);
+    }
   }
 
   const onDateSelect = date => {

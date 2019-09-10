@@ -7,6 +7,7 @@ import { ACTIVITIES, DATE_FORMAT, DATE_FORMAT_PRINT } from './const';
 
 const BookingForm = ({activity, date, maxAttendees, time, setIsLoading}) => {
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
   const options = [];
   for (let i = 1; i <= maxAttendees; i++) {
@@ -14,6 +15,7 @@ const BookingForm = ({activity, date, maxAttendees, time, setIsLoading}) => {
   }
 
   const onSubmit = async values => {
+    setError(null);
     setIsLoading(true);
     
     const payload = {
@@ -24,10 +26,14 @@ const BookingForm = ({activity, date, maxAttendees, time, setIsLoading}) => {
       time
     }
 
-    const res = await axios.post("https://gcalendar-booking.herokuapp.com/create-booking", {payload});
-    setResult(res.status);
-
-    setIsLoading(false);
+    try {
+      const res = await axios.post("https://gcalendar-booking.herokuapp.com/create-booking", {payload});
+      setResult(res.status);
+      setIsLoading(false);
+    } catch(e) {
+      setError('Virhe varauspyyntöä lähettäessä, ole hyvä ja laita varaustietosi sähköpostitse toni@huvimestari.fi tai soita 0400 627 010. Ilmoitathan samalla virheestä, että voimme korjata sen ensitilassa!');
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -97,7 +103,11 @@ const BookingForm = ({activity, date, maxAttendees, time, setIsLoading}) => {
 
         }
       />
-      { result && ( result === 200 ? <div>Kiitos varauspyynnöstä, muistathan kysyä ellet saa vahvistusta varaukseesi 24h sisään.</div> : <div>Nyt meni jotain pieleen. Kokeiletko uudestaan ja ellei onnistu, laita viestiä toni@huvimestari.fi / 0400 627 010</div> ) }
+      {
+        error
+          ? <div>{error}</div>
+          : (result === 200 && <div>Kiitos varauspyynnöstä, muistathan kysyä ellet saa vahvistusta varaukseesi 24h sisään. Jos osallistujamäärä muuttuu, muistathan ilmoittaa toni@huvimestari.fi / 0400 627 010, koska muuten välttämättä jokainen ei ehdi osallistua!</div>)
+      }
     </>
   );
 }
