@@ -13,6 +13,9 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 registerLocale("fi", fi);
 
+// wake-up call for Heroku right when a user enters the booking page (should reduce waiting period after first date select)
+axios.get("https://gcalendar-booking.herokuapp.com/wake-up");
+
 const objToStrMap = obj => {
   let strMap = new Map();
   for (let k of Object.keys(obj)) {
@@ -103,6 +106,7 @@ const App = () => {
         dateFormat={DATE_FORMAT_DATEPICKER}
         onChange={onDateSelect}
         locale="fi"
+        minDate={moment().add(1, 'day').toDate()}
         placeholderText="Valitse päivä"
         selected={date} />
       {
