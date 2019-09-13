@@ -30,16 +30,20 @@ const App = () => {
   const [time, setTime] = useState(null);
   const [activity, setActivity] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [maxAttendees, setMaxAttendees] = useState(null);
   const [error, setError] = useState(null);
 
   const renderSlotTable = () =>
     freeSlots && freeSlots.size > 0 && ! isLoading ? 
-      <table>
-        <tbody>
-          { renderSlots() }
-        </tbody>
-      </table>
+      <div>
+        <div className="info">Valitsemasi päivän vapaat ajat ovat nähtävissä alla olevasta kalenterista. Klikkaa haluamaasi aktiviteettia ja pääset tekemään varauksen.</div>
+        <table className="slotTable">
+          <tbody>
+            { renderSlots() }
+          </tbody>
+        </table>
+      </div>
     : date && ! isLoading && (error ? <div><br />Virhe haettaessa kalenteritapahtumia</div> : <div>Ei vapaita aikoja valittuna päivänä</div>)
 
   const renderSlots = () => {
@@ -56,13 +60,18 @@ const App = () => {
   }
   
   const renderActivityButtons = (time, activities) =>
-    <span key={time}>
+    <span key={time} className="timeSlotButtons">
       { activities.includes(ACTIVITY_RAPPELLING) && <button onClick={() => onActivitySelect(time, ACTIVITY_RAPPELLING)}>Köysilaskeutuminen</button> }
       { activities.includes(ACTIVITY_PENDULUM) && <button onClick={() => onActivitySelect(time, ACTIVITY_PENDULUM)}>Siltakeinu</button> }
       { activities.includes(ACTIVITY_CLIMBING) && <button onClick={() => onActivitySelect(time, ACTIVITY_CLIMBING)}>Kalliokiipeily</button> }
     </span>
 
   const getFreeSlots = async (date) => {
+    if (! date) {
+      setFreeSlots(null);
+      return;
+    }
+
     setError(null);
     setIsLoading(true);
 
@@ -78,6 +87,7 @@ const App = () => {
 
   const onDateSelect = date => {
     setActivity(null);
+    setIsSubmitted(false);
     setMaxAttendees(null);
     setDate(date);
     getFreeSlots(date);
@@ -102,17 +112,20 @@ const App = () => {
 
   return (
     <div className="App">
+      <h1>Huvimestarin varauskalenteri</h1>
+      <b>Valitse päivämäärä: &nbsp;</b>
       <Datepicker
         dateFormat={DATE_FORMAT_DATEPICKER}
         onChange={onDateSelect}
+        isClearable
         locale="fi"
         minDate={moment().add(1, 'day').toDate()}
-        placeholderText="Valitse päivä"
+        placeholderText=""
         selected={date} />
       {
         activity
-          ? <BookingForm activity={activity} date={date} maxAttendees={maxAttendees} time={time} setIsLoading={setIsLoading} />
-          : renderSlotTable()
+          ? <BookingForm activity={activity} date={date} isSubmitted={isSubmitted} maxAttendees={maxAttendees} time={time} setDate={setDate} setIsLoading={setIsLoading} setIsSubmitted={setIsSubmitted} />
+          : date ? renderSlotTable() : ''
       }
       { isLoading && <div><br /><br /><Loader type="TailSpin" color="#FF7E00" height={60} width={60} /></div> }
     </div>
