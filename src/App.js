@@ -96,6 +96,7 @@ const App = () => {
   const onActivitySelect = (time, act) => {
     setTime(time);
     setActivity(act);
+    window.scrollTo(0, 0);
 
     const [hour, min] = time.split('.');
 
