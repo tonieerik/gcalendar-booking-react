@@ -71,7 +71,7 @@ const BookingForm = ({activity, date, isSubmitted, maxAttendees, time, setDate, 
   const renderBookingForm = () =>
     <div className="bookingForm">
       <h3>Olet tekemässä varausta:</h3>
-      <b>{ACTIVITIES.find(act => act.id === activity).title}, {moment(date).format(DATE_FORMAT_PRINT)} klo {time}</b><br /><br />
+      <div class="bookingTitle">{ACTIVITIES.find(act => act.id === activity).title}, {moment(date).format(DATE_FORMAT_PRINT)} klo {time}</div>
       <Form
         initialValues={{attendees: options[0]}}
         onSubmit={onSubmit}
@@ -117,8 +117,8 @@ const BookingForm = ({activity, date, isSubmitted, maxAttendees, time, setDate, 
               />
             </label>
             <br />
-            <div><b>Osallistujien mukaan arvioitu hinta: {(values && values.attendees ) ? (PRICES.find(x => x.id === activity).basePrice + (values.attendees.value-1) * PRICES.find(x => x.id === activity).personPrice) : '??'}&euro;</b><br />
-            Veloitetaan paikan päällä, toteutuneiden osallistujien mukaan (minimi: 1 hlö).</div>
+            <div className="info"><b>Osallistujien mukaan arvioitu hinta: {(values && values.attendees ) ? (PRICES.find(x => x.id === activity).basePrice + (values.attendees.value-1) * PRICES.find(x => x.id === activity).personPrice) : '??'}&euro;</b><br />
+            Veloitetaan paikan päällä (käteinen/kortti), toteutuneiden osallistujien mukaan (minimi: 1 hlö).</div>
             <div>
               <button type="submit" disabled={submitting || pristine}>
                 L Ä H E T Ä

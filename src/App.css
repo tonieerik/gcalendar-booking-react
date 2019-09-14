@@ -7,22 +7,16 @@ h1 {
 }
 
 .App {
+  max-width: 400px;
   margin: auto;
-  width: 400px;
 }
 
 .bookingForm {
   margin-top: 30px;
-  width: 100%;
 }
 
 .info {
-  margin: 10px 0;
-}
-
-.slotTable {
-  width: 400px;
-  margin: auto;
+  margin: 10px 10px;
 }
 
 .slotTable td {
@@ -42,6 +36,16 @@ h1 {
   padding: 5px 8px;
 }
 
+.bookingTitle {
+  border: 1px solid #333333;
+  background-color: #ff7800;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
 .bookingForm button {
   background-color: #333333;
   border-radius: 5px;
@@ -58,7 +62,7 @@ label {
   margin-top: 10px;
 }
 
-input, textarea, Select {
+input, textarea {
   background-color: #ff7800;
   border: 1px solid #ffffff;
   border-radius: 5px;
@@ -66,16 +70,37 @@ input, textarea, Select {
   font-size: 16px;
   height: 30px;
   padding: 5px 10px;
-  width: 100%;
+  width: 378px;
 }
 input::placeholder, textarea::placeholder {
   color: #ffffff;
   opacity: 0.7;
 }
 textarea {
-  height: 100px;
+  height: 110px;
 }
 
 .react-datepicker__close-icon::after {
   background-color: #333333 !important;
+}
+
+@media only screen and (max-width: 768px) {
+  h1 { font-size: 20px; }
+  input, textarea {
+    width: 278px;
+  }
+
+  .App {
+    max-width: 300px;
+    margin: auto;
+  }
+
+  .bookingTitle {
+    font-size: 24px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+  }
+
+  .info { margin: 10px; }
 }
