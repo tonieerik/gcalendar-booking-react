@@ -71,7 +71,7 @@ const BookingForm = ({activity, date, isSubmitted, maxAttendees, time, setDate, 
   const renderBookingForm = () =>
     <div className="bookingForm">
       <h3>Olet tekemässä varausta:</h3>
-      <div class="bookingTitle">{ACTIVITIES.find(act => act.id === activity).title}, {moment(date).format(DATE_FORMAT_PRINT)} klo {time}</div>
+      <div className="bookingTitle">{ACTIVITIES.find(act => act.id === activity).title}, {moment(date).format(DATE_FORMAT_PRINT)} klo {time}</div>
       <Form
         initialValues={{attendees: options[0]}}
         onSubmit={onSubmit}
