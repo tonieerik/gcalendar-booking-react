@@ -14,8 +14,8 @@ import {
 import "./App.css";
 
 const PRICES = [
-  { id: ACTIVITY_RAPPELLING, basePrice: 150, personPrice: 30 },
-  { id: ACTIVITY_PENDULUM, basePrice: 100, personPrice: 25 },
+  { id: ACTIVITY_RAPPELLING, basePrice: 150, personPrice: 35 },
+  { id: ACTIVITY_PENDULUM, basePrice: 100, personPrice: 30 },
 ];
 
 const BookingForm = ({
