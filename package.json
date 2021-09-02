@@ -6,7 +6,7 @@
     "axios": "0.21.1",
     "final-form": "4.20.1",
     "moment": "2.29.1",
-    "object-path": "0.11.5",
+    "object-path": "0.11.6",
     "react": "16.14.0",
     "react-datepicker": "2.9.4",
     "react-dev-utils": "11.0.1",
